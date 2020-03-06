@@ -1,6 +1,8 @@
 package de.adito.relativedateexpression.token;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a simple container which can hold multiple {@link IExpressionToken}. Only one instance
@@ -48,13 +50,13 @@ public class ExpressionTokenContainer {
   }
 
   /**
-   * Will return all registered {@link IExpressionToken} within this container. The returned
-   * collection is immutable.
+   * Will return all registered {@link IExpressionToken} within this container. The returned list is
+   * immutable, which means it can not be modified.
    *
-   * @return A immutable collection of all registered tokens within this container.
+   * @return A immutable list o all registered tokens within this container.
    */
   @SuppressWarnings("rawtypes")
-  public Collection<IExpressionToken> getAllTokens() {
-    return Collections.unmodifiableCollection(tokens.values());
+  public List<IExpressionToken> getAllTokens() {
+    return List.copyOf(tokens.values());
   }
 }
