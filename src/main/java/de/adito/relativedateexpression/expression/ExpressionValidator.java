@@ -1,12 +1,12 @@
 package de.adito.relativedateexpression.expression;
 
 import de.adito.relativedateexpression.expression.exception.ExpressionValidationException;
-import de.adito.relativedateexpression.tokenizer.ExpressionTokenizeException;
 import de.adito.relativedateexpression.token.ExpressionTokenContainer;
 import de.adito.relativedateexpression.token.IExpressionToken;
-import de.adito.relativedateexpression.token.ScopeToken;
+import de.adito.relativedateexpression.tokenizer.ExpressionTokenizeException;
 
 class ExpressionValidator {
+  private ExpressionValidator() {}
 
   /**
    * Will check if the given token is available on the given {@link ExpressionTokenContainer}.
@@ -16,9 +16,8 @@ class ExpressionValidator {
    * @throws ExpressionValidationException If the token could not be found on the container.
    */
   static void requireToken(
-      ExpressionTokenContainer container, Class<? extends IExpressionToken<?>> token)
-      throws ExpressionValidationException {
-    if (!container.hasToken(ScopeToken.class)) throw tokenNotFoundException(ScopeToken.class);
+      ExpressionTokenContainer container, Class<? extends IExpressionToken<?>> token) {
+    if (!container.hasToken(token)) throw tokenNotFoundException(token);
   }
 
   /**

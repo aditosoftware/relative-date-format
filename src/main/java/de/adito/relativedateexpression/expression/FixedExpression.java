@@ -22,7 +22,7 @@ public class FixedExpression extends AbstractExpression implements IExpression {
   }
 
   @Override
-  void validateContainer(ExpressionTokenContainer container) throws ExpressionValidationException {
+  void validateContainer(ExpressionTokenContainer container) {
     if (!container.hasToken(StartToken.class) && container.hasToken(EndToken.class))
       throw new ExpressionValidationException("Either token 'START' or 'END' must be set");
   }

@@ -1,6 +1,5 @@
 package de.adito.relativedateexpression.expression;
 
-import de.adito.relativedateexpression.expression.exception.ExpressionValidationException;
 import de.adito.relativedateexpression.token.ExpressionTokenContainer;
 import de.adito.relativedateexpression.token.ScopeToken;
 
@@ -15,7 +14,7 @@ public class AdjustedExpression extends AbstractExpression implements IExpressio
   }
 
   @Override
-  void validateContainer(ExpressionTokenContainer container) throws ExpressionValidationException {
+  void validateContainer(ExpressionTokenContainer container) {
     ExpressionValidator.requireToken(container, ScopeToken.class);
   }
 }
