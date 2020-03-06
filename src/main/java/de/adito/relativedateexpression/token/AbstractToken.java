@@ -2,6 +2,8 @@ package de.adito.relativedateexpression.token;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Represents a abstract {@link IExpressionToken} which fully implements the interface and accepts
  * the parameters through the constructor.
@@ -27,5 +29,19 @@ public abstract class AbstractToken<T> implements IExpressionToken<T> {
   @Override
   public T getValue() {
     return value;
+  }
+
+  @Override
+  public boolean equals (Object o) {
+    if (this == o) return true;
+    if (!(o instanceof AbstractToken)) return false;
+    AbstractToken<?> that = (AbstractToken<?>) o;
+    return Objects.equals(getTokenName(), that.getTokenName()) &&
+        Objects.equals(getValue(), that.getValue());
+  }
+
+  @Override
+  public int hashCode () {
+    return Objects.hash(getTokenName(), getValue());
   }
 }

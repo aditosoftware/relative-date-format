@@ -3,6 +3,7 @@ package de.adito.relativedateexpression.token;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a simple container which can hold multiple {@link IExpressionToken}. Only one instance
@@ -58,5 +59,18 @@ public class ExpressionTokenContainer {
   @SuppressWarnings("rawtypes")
   public List<IExpressionToken> getAllTokens() {
     return List.copyOf(tokens.values());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ExpressionTokenContainer)) return false;
+    ExpressionTokenContainer that = (ExpressionTokenContainer) o;
+    return Objects.equals(tokens, that.tokens);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(tokens.values());
   }
 }
