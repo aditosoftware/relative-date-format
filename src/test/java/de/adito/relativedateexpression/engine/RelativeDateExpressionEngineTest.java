@@ -1,8 +1,8 @@
 package de.adito.relativedateexpression.engine;
 
 import de.adito.relativedateexpression.expression.IExpression;
-import de.adito.relativedateexpression.parser.DefaultExpressionTokenizer;
-import de.adito.relativedateexpression.parser.ExpressionParseException;
+import de.adito.relativedateexpression.tokenizer.DefaultExpressionTokenizer;
+import de.adito.relativedateexpression.tokenizer.ExpressionTokenizeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ class RelativeDateExpressionEngineTest {
 
   @Test
   void shouldResolveAdjustedExpressionCorrectly()
-      throws ExpressionParseException, ExpressionCalculateException {
+      throws ExpressionTokenizeException, ExpressionCalculateException {
     IExpression expression = tokenizer.tokenize("REL=ADJUSTED;SCOPE=YEAR");
     IResult result = engine.resolve(expression, now);
 
@@ -43,7 +43,7 @@ class RelativeDateExpressionEngineTest {
 
   @Test
   void shouldResolveFixedExpressionCorrectly()
-      throws ExpressionParseException, ExpressionCalculateException {
+      throws ExpressionTokenizeException, ExpressionCalculateException {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P10D");
     IResult result = engine.resolve(expression, now);
 
@@ -57,7 +57,7 @@ class RelativeDateExpressionEngineTest {
   }
 
   @Test
-  void shouldThrowOnInvalidFixedExpression() throws ExpressionParseException {
+  void shouldThrowOnInvalidFixedExpression() throws ExpressionTokenizeException {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P1D;END=-P2D");
 
     assertThrows(ExpressionCalculateException.class, () -> engine.resolve(expression, now));
@@ -65,7 +65,7 @@ class RelativeDateExpressionEngineTest {
 
   @Test
   void shouldResolveMixedExpression()
-      throws ExpressionParseException, ExpressionCalculateException {
+      throws ExpressionTokenizeException, ExpressionCalculateException {
     IExpression expression = tokenizer.tokenize("REL=MIXED;DURATION=P300D;SCOPE=MONTH");
     IResult result = engine.resolve(expression, now);
 

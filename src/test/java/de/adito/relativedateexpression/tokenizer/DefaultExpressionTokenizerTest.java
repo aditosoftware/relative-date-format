@@ -1,4 +1,4 @@
-package de.adito.relativedateexpression.parser;
+package de.adito.relativedateexpression.tokenizer;
 
 import de.adito.relativedateexpression.expression.AdjustedExpression;
 import de.adito.relativedateexpression.expression.FixedExpression;
@@ -23,7 +23,7 @@ class DefaultExpressionTokenizerTest {
   }
 
   @Test
-  void shouldTokenizeAdjustedExpression() throws ExpressionParseException {
+  void shouldTokenizeAdjustedExpression() throws ExpressionTokenizeException {
     IExpression expression = tokenizer.tokenize("REL=ADJUSTED;SCOPE=DAY");
 
     assertTrue(expression instanceof AdjustedExpression);
@@ -34,7 +34,7 @@ class DefaultExpressionTokenizerTest {
   }
 
   @Test
-  void shouldTokenizeFixedExpression() throws ExpressionParseException {
+  void shouldTokenizeFixedExpression() throws ExpressionTokenizeException {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P1D;END=null");
 
     assertTrue(expression instanceof FixedExpression);
@@ -46,7 +46,7 @@ class DefaultExpressionTokenizerTest {
   }
 
   @Test
-  void shouldTokenizeMixedExpression() throws ExpressionParseException {
+  void shouldTokenizeMixedExpression() throws ExpressionTokenizeException {
     IExpression expression = tokenizer.tokenize("REL=MIXED;DURATION=P30D;SCOPE=MONTH");
 
     assertTrue(expression instanceof MixedExpression);

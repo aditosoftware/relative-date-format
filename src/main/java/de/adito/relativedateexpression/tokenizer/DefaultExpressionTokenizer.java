@@ -1,4 +1,4 @@
-package de.adito.relativedateexpression.parser;
+package de.adito.relativedateexpression.tokenizer;
 
 import de.adito.relativedateexpression.expression.AdjustedExpression;
 import de.adito.relativedateexpression.expression.FixedExpression;
@@ -21,7 +21,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
   }
 
   @Override
-  public IExpression tokenize(String expression) throws ExpressionParseException {
+  public IExpression tokenize(String expression) throws ExpressionTokenizeException {
     String[] split = expression.split(";");
 
     // Create a new empty token container.
@@ -32,7 +32,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
 
       // The key/value part has to be exactly of length 2.
       if (kvPart.length != 2)
-        throw new ExpressionParseException(String.format("Invalid part given '%s'", splitPart));
+        throw new ExpressionTokenizeException(String.format("Invalid part given '%s'", splitPart));
 
       String key = kvPart[0];
       String value = kvPart[1];
@@ -40,14 +40,14 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
       // Search for the token.
       ETokenType type = ETokenType.searchToken(key);
       if (type == null)
-        throw new ExpressionParseException(String.format("Unknown token '%s' given", key));
+        throw new ExpressionTokenizeException(String.format("Unknown token '%s' given", key));
 
       // Parse the value of the token.
       Object parsedValue;
       try {
         parsedValue = valueParser.parseValue(type, value);
       } catch (ValueParseException exception) {
-        throw new ExpressionParseException(exception.getMessage());
+        throw new ExpressionTokenizeException(exception.getMessage());
       }
 
       // Create a new instance of the token and add it to the container.
@@ -63,12 +63,12 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    *
    * @param container The container which contains all tokens to create the expression.
    * @return The expression, never null.
-   * @throws ExpressionParseException If a required token is missing.
+   * @throws ExpressionTokenizeException If a required token is missing.
    */
   private IExpression createExpression(ExpressionTokenContainer container)
-      throws ExpressionParseException {
+      throws ExpressionTokenizeException {
     if (!container.hasToken(RelToken.class))
-      throw new ExpressionParseException("Required token 'REL' not found");
+      throw new ExpressionTokenizeException("Required token 'REL' not found");
 
     RelToken relToken = container.getToken(RelToken.class);
 
@@ -89,10 +89,10 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    *
    * @param container The container, which will be used to create the expression instance.
    * @return The created expression instance.
-   * @throws ExpressionParseException If anything fails.
+   * @throws ExpressionTokenizeException If anything fails.
    */
   private IExpression createAdjustedExpression(ExpressionTokenContainer container)
-      throws ExpressionParseException {
+      throws ExpressionTokenizeException {
     return new AdjustedExpression(container);
   }
 
@@ -101,10 +101,10 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    *
    * @param container The container, which will be used to create the expression instance.
    * @return The created expression instance.
-   * @throws ExpressionParseException If anything fails.
+   * @throws ExpressionTokenizeException If anything fails.
    */
   private IExpression createFixedExpression(ExpressionTokenContainer container)
-      throws ExpressionParseException {
+      throws ExpressionTokenizeException {
     return new FixedExpression(container);
   }
 
@@ -113,10 +113,10 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    *
    * @param container The container, which will be used to create the expression instance.
    * @return The created expression instance.
-   * @throws ExpressionParseException If anything fails.
+   * @throws ExpressionTokenizeException If anything fails.
    */
   private IExpression createMixedExpression(ExpressionTokenContainer container)
-      throws ExpressionParseException {
+      throws ExpressionTokenizeException {
 
     return new MixedExpression(container);
   }

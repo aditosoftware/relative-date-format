@@ -1,7 +1,7 @@
 package de.adito.relativedateexpression.expression;
 
 import de.adito.relativedateexpression.expression.exception.ExpressionValidationException;
-import de.adito.relativedateexpression.parser.ExpressionParseException;
+import de.adito.relativedateexpression.tokenizer.ExpressionTokenizeException;
 import de.adito.relativedateexpression.token.ExpressionTokenContainer;
 import de.adito.relativedateexpression.token.IExpressionToken;
 import de.adito.relativedateexpression.token.ScopeToken;
@@ -22,7 +22,7 @@ class ExpressionValidator {
   }
 
   /**
-   * Will create a new {@link ExpressionParseException} which tells that a required token was not
+   * Will create a new {@link ExpressionTokenizeException} which tells that a required token was not
    * found on the expression.
    *
    * @param token The missing token.
