@@ -6,6 +6,7 @@ import de.adito.relativedateexpression.token.IExpressionToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,19 @@ public abstract class AbstractExpression implements IExpression {
     return getTokenContainer().getAllTokens().stream()
         .map(it -> it.getTokenName() + "=" + it.getValue())
         .collect(Collectors.joining(";"));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof AbstractExpression)) return false;
+    AbstractExpression that = (AbstractExpression) o;
+    return getType() == that.getType() && Objects.equals(container, that.container);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getType(), container);
   }
 
   /**
