@@ -11,6 +11,7 @@ import java.util.stream.Stream;
  * Represents a enum which holds all available {@link IExpressionToken}s. This also provides some
  * utility methods for the tokens.
  */
+@SuppressWarnings("rawtypes")
 public enum ETokenType {
   SCOPE(ScopeToken.class, ScopeToken.Scope.class),
   END(EndToken.class, Duration.class),
@@ -18,8 +19,8 @@ public enum ETokenType {
   DURATION(DurationToken.class, Duration.class),
   REL(RelToken.class, RelToken.Type.class);
 
-  private Class<? extends IExpressionToken> token;
-  private Class<?> value;
+  private final Class<? extends IExpressionToken> token;
+  private final Class<?> value;
 
   ETokenType(Class<? extends IExpressionToken> token, Class<?> value) {
     this.token = token;
@@ -51,7 +52,7 @@ public enum ETokenType {
    * @return The created instance
    */
   @NotNull
-  public IExpressionToken<?> createInstance(@NotNull ETokenType type, @NotNull Object value) {
+  public IExpressionToken createInstance(@NotNull ETokenType type, @NotNull Object value) {
     // Check if the class of the given value is compatible with the expected value class
     if (!type.value.isAssignableFrom(value.getClass()))
       throw new IllegalArgumentException(

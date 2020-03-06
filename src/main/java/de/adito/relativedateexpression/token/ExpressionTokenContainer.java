@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ExpressionTokenContainer {
   @SuppressWarnings("rawtypes")
-  private Map<Class<? extends IExpressionToken>, IExpressionToken<?>> tokens;
+  private final Map<Class<? extends IExpressionToken>, IExpressionToken<?>> tokens;
 
   public ExpressionTokenContainer() {
     tokens = new LinkedHashMap<>();
