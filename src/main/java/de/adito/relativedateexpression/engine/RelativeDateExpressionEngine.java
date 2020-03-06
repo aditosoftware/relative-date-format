@@ -15,7 +15,7 @@ public class RelativeDateExpressionEngine implements IExpressionEngine {
   public IResult resolve(@NotNull IExpression expression, @NotNull LocalDateTime relative)
       throws ExpressionCalculateException {
     if (expression instanceof AdjustedExpression)
-      return resolveAdjustedExpression((AdjustedExpression) expression, relative);
+      return resolveAdjustedExpression(((AdjustedExpression) expression).getScope(), relative);
     else if (expression instanceof FixedExpression)
       return resolveFixedExpression((FixedExpression) expression, relative);
     else if (expression instanceof MixedExpression)
@@ -26,17 +26,17 @@ public class RelativeDateExpressionEngine implements IExpressionEngine {
             "Expression of type '%s' is not supported", expression.getClass().getSimpleName()));
   }
 
-  private IResult resolveAdjustedExpression(AdjustedExpression expression, LocalDateTime relative) {
+  private IResult resolveAdjustedExpression(ScopeToken.Scope scope, LocalDateTime relative) {
     LocalDateTime start;
     LocalDateTime end;
 
-    if (expression.getScope() == ScopeToken.Scope.YEAR) {
+    if (scope == ScopeToken.Scope.YEAR) {
       start = relative.with(TemporalAdjusters.firstDayOfYear());
       end = relative.with(TemporalAdjusters.lastDayOfYear());
-    } else if (expression.getScope() == ScopeToken.Scope.MONTH) {
+    } else if (scope == ScopeToken.Scope.MONTH) {
       start = relative.with(TemporalAdjusters.firstDayOfMonth());
       end = relative.with(TemporalAdjusters.lastDayOfMonth());
-    } else if (expression.getScope() == ScopeToken.Scope.WEEK) {
+    } else if (scope == ScopeToken.Scope.WEEK) {
       start = relative.with(DayOfWeek.MONDAY);
       end = relative.with(DayOfWeek.SUNDAY);
     } else {
@@ -51,8 +51,11 @@ public class RelativeDateExpressionEngine implements IExpressionEngine {
 
   private IResult resolveFixedExpression(FixedExpression expression, LocalDateTime relative)
       throws ExpressionCalculateException {
-    LocalDateTime start = relative.plus(expression.getStart());
-    LocalDateTime end = relative.plus(expression.getEnd());
+    Duration startDuration = expression.getStart();
+    Duration endDuration = expression.getEnd();
+
+    LocalDateTime start = startDuration != null ? relative.plus(startDuration) : relative;
+    LocalDateTime end = endDuration != null ? relative.plus(endDuration) : relative;
 
     if (end.isBefore(start))
       throw new ExpressionCalculateException("Start of expression is before end");
@@ -62,6 +65,6 @@ public class RelativeDateExpressionEngine implements IExpressionEngine {
 
   private IResult resolveMixedExpression(MixedExpression expression, LocalDateTime relative) {
     return resolveAdjustedExpression(
-        new AdjustedExpression(expression.getScope()), relative.plus(expression.getDuration()));
+        expression.getScope(), relative.plus(expression.getDuration()));
   }
 }

@@ -9,8 +9,6 @@ import de.adito.relativedateexpression.value.DefaultValueParser;
 import de.adito.relativedateexpression.value.IValueParser;
 import de.adito.relativedateexpression.value.ValueParseException;
 
-import java.time.Duration;
-
 public class DefaultExpressionTokenizer implements ExpressionTokenizer {
   private final IValueParser valueParser;
 
@@ -65,7 +63,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    *
    * @param container The container which contains all tokens to create the expression.
    * @return The expression, never null.
-   * @throws ExpressionParseException If a required token is missing.1
+   * @throws ExpressionParseException If a required token is missing.
    */
   private IExpression createExpression(ExpressionTokenContainer container)
       throws ExpressionParseException {
@@ -95,11 +93,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    */
   private IExpression createAdjustedExpression(ExpressionTokenContainer container)
       throws ExpressionParseException {
-    requireToken(container, ScopeToken.class);
-
-    ScopeToken scope = container.getToken(ScopeToken.class);
-
-    return new AdjustedExpression(scope.getValue());
+    return new AdjustedExpression(container);
   }
 
   /**
@@ -111,15 +105,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    */
   private IExpression createFixedExpression(ExpressionTokenContainer container)
       throws ExpressionParseException {
-    if (!container.hasToken(StartToken.class) && container.hasToken(EndToken.class))
-      throw new ExpressionParseException("Either token 'START' or 'END' must be set");
-
-    StartToken start = container.getToken(StartToken.class);
-    EndToken end = container.getToken(EndToken.class);
-
-    return new FixedExpression(
-        start != null ? start.getValue() : Duration.ZERO,
-        end != null ? end.getValue() : Duration.ZERO);
+    return new FixedExpression(container);
   }
 
   /**
@@ -131,38 +117,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer {
    */
   private IExpression createMixedExpression(ExpressionTokenContainer container)
       throws ExpressionParseException {
-    requireToken(container, DurationToken.class);
-    requireToken(container, ScopeToken.class);
 
-    ScopeToken scope = container.getToken(ScopeToken.class);
-    DurationToken duration = container.getToken(DurationToken.class);
-
-    return new MixedExpression(scope.getValue(), duration.getValue());
-  }
-
-  /**
-   * Will check if the given token is available on the given {@link ExpressionTokenContainer}.
-   *
-   * @param container The container to search on.
-   * @param token The token for which shall be searched on the container.
-   * @throws ExpressionParseException If the token could not be found on the container.
-   */
-  private void requireToken(
-      ExpressionTokenContainer container, Class<? extends IExpressionToken<?>> token)
-      throws ExpressionParseException {
-    if (!container.hasToken(ScopeToken.class)) throw tokenNotFoundException(ScopeToken.class);
-  }
-
-  /**
-   * Will create a new {@link ExpressionParseException} which tells that a required token was not
-   * found on the expression.
-   *
-   * @param token The missing token.
-   * @return The created exception instance.
-   */
-  private ExpressionParseException tokenNotFoundException(
-      Class<? extends IExpressionToken<?>> token) {
-    return new ExpressionParseException(
-        String.format("Required token '%s' was not found", token.getSimpleName()));
+    return new MixedExpression(container);
   }
 }

@@ -3,7 +3,7 @@ package de.adito.relativedateexpression.factory;
 import de.adito.relativedateexpression.expression.AdjustedExpression;
 import de.adito.relativedateexpression.expression.FixedExpression;
 import de.adito.relativedateexpression.expression.MixedExpression;
-import de.adito.relativedateexpression.token.ScopeToken;
+import de.adito.relativedateexpression.token.*;
 
 import java.time.Duration;
 
@@ -18,7 +18,11 @@ public class ExpressionFactory {
    * @return The new expression.
    */
   public static AdjustedExpression adjusted(ScopeToken.Scope scope) {
-    return new AdjustedExpression(scope);
+    ExpressionTokenContainer container = new ExpressionTokenContainer();
+    container.addToken(new RelToken(RelToken.Type.ADJUSTED));
+    container.addToken(new ScopeToken(scope));
+
+    return new AdjustedExpression(container);
   }
 
   /**
@@ -29,7 +33,12 @@ public class ExpressionFactory {
    * @return The new expression.
    */
   public static FixedExpression fixed(Duration start, Duration end) {
-    return new FixedExpression(start, end);
+    ExpressionTokenContainer container = new ExpressionTokenContainer();
+    container.addToken(new RelToken(RelToken.Type.FIXED));
+    container.addToken(new StartToken(start));
+    container.addToken(new EndToken(start));
+
+    return new FixedExpression(container);
   }
 
   /**
@@ -40,6 +49,11 @@ public class ExpressionFactory {
    * @return The new expression.
    */
   public static MixedExpression mixed(Duration duration, ScopeToken.Scope scope) {
-    return new MixedExpression(scope, duration);
+    ExpressionTokenContainer container = new ExpressionTokenContainer();
+    container.addToken(new RelToken(RelToken.Type.MIXED));
+    container.addToken(new DurationToken(duration));
+    container.addToken(new ScopeToken(scope));
+
+    return new MixedExpression(container);
   }
 }

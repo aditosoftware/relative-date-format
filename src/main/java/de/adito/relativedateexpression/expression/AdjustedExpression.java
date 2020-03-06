@@ -1,20 +1,21 @@
 package de.adito.relativedateexpression.expression;
 
+import de.adito.relativedateexpression.expression.exception.ExpressionValidationException;
+import de.adito.relativedateexpression.token.ExpressionTokenContainer;
 import de.adito.relativedateexpression.token.ScopeToken;
 
-public class AdjustedExpression implements IExpression {
-  private ScopeToken.Scope scope;
+public class AdjustedExpression extends AbstractExpression implements IExpression {
 
-  public AdjustedExpression (ScopeToken.Scope scope) {
-    this.scope = scope;
+  public AdjustedExpression(ExpressionTokenContainer container) {
+    super(Type.ADJUSTED, container);
+  }
+
+  public ScopeToken.Scope getScope() {
+    return getValue(ScopeToken.class);
   }
 
   @Override
-  public Type getType () {
-    return Type.ADJUSTED;
-  }
-
-  public ScopeToken.Scope getScope () {
-    return scope;
+  void validateContainer(ExpressionTokenContainer container) throws ExpressionValidationException {
+    ExpressionValidator.requireToken(container, ScopeToken.class);
   }
 }
