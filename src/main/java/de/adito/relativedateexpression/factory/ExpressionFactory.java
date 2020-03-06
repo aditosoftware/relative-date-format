@@ -36,7 +36,7 @@ public class ExpressionFactory {
     ExpressionTokenContainer container = new ExpressionTokenContainer();
     container.addToken(new RelToken(RelToken.Type.FIXED));
     container.addToken(new StartToken(start));
-    container.addToken(new EndToken(start));
+    container.addToken(new EndToken(end));
 
     return new FixedExpression(container);
   }
