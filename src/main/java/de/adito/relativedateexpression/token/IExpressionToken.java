@@ -1,5 +1,7 @@
 package de.adito.relativedateexpression.token;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Describes a token which exists on the expression with the given {@link this#getValue()}.
  *
@@ -11,6 +13,7 @@ public interface IExpressionToken<T> {
    *
    * @return The name of the token.
    */
+  @NotNull
   String getTokenName();
 
   /**
@@ -18,5 +21,6 @@ public interface IExpressionToken<T> {
    *
    * @return The value of this token.
    */
+  @NotNull
   T getValue();
 }

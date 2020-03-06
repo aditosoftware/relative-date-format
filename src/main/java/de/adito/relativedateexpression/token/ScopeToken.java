@@ -1,20 +1,8 @@
 package de.adito.relativedateexpression.token;
 
-public class ScopeToken implements IExpressionToken<ScopeToken.Scope> {
-  private Scope value;
-
+public class ScopeToken extends AbstractToken<ScopeToken.Scope> {
   public ScopeToken(Scope value) {
-    this.value = value;
-  }
-
-  @Override
-  public String getTokenName() {
-    return "SCOPE";
-  }
-
-  @Override
-  public Scope getValue() {
-    return value;
+    super("SCOPE", value);
   }
 
   public enum Scope {
