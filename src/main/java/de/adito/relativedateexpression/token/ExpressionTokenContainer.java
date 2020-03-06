@@ -1,9 +1,6 @@
 package de.adito.relativedateexpression.token;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a simple container which can hold multiple {@link IExpressionToken}. Only one instance
@@ -13,8 +10,11 @@ public class ExpressionTokenContainer {
   @SuppressWarnings("rawtypes")
   private final Map<Class<? extends IExpressionToken>, IExpressionToken<?>> tokens;
 
+  private final Set<IExpressionToken<?>> tokensSet;
+
   public ExpressionTokenContainer() {
     tokens = new LinkedHashMap<>();
+    tokensSet = new LinkedHashSet<>();
   }
 
   /**
@@ -48,6 +48,7 @@ public class ExpressionTokenContainer {
    */
   public void addToken(IExpressionToken<?> token) {
     tokens.put(token.getClass(), token);
+    tokensSet.add(token);
   }
 
   /**
@@ -58,7 +59,7 @@ public class ExpressionTokenContainer {
    */
   @SuppressWarnings("rawtypes")
   public List<IExpressionToken> getAllTokens() {
-    return List.copyOf(tokens.values());
+    return List.copyOf(tokensSet);
   }
 
   @Override
@@ -66,11 +67,12 @@ public class ExpressionTokenContainer {
     if (this == o) return true;
     if (!(o instanceof ExpressionTokenContainer)) return false;
     ExpressionTokenContainer that = (ExpressionTokenContainer) o;
-    return Objects.equals(tokens, that.tokens);
+
+    return tokensSet.containsAll(that.tokensSet) && that.tokensSet.containsAll(tokensSet);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tokens.values());
+    return Objects.hash(tokensSet);
   }
 }

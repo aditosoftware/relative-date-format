@@ -72,4 +72,26 @@ class ExpressionTokenContainerTest {
 
     assertNotEquals(containerOne, containerTwo);
   }
+
+  @Test
+  void shouldPerformEqualsCheckOnRandomCorrectly() {
+    ExpressionTokenContainer containerOne = new ExpressionTokenContainer();
+    ExpressionTokenContainer containerTwo = new ExpressionTokenContainer();
+
+    RelToken relToken = new RelToken(RelToken.Type.ADJUSTED);
+    ScopeToken scopeToken = new ScopeToken(ScopeToken.Scope.DAY);
+    DurationToken durationToken = new DurationToken(Duration.ofDays(30));
+
+    containerOne.addToken(relToken);
+    containerOne.addToken(scopeToken);
+    containerOne.addToken(durationToken);
+
+    assertNotEquals(containerOne, containerTwo);
+
+    containerTwo.addToken(scopeToken);
+    containerTwo.addToken(durationToken);
+    containerTwo.addToken(relToken);
+
+    assertEquals(containerOne, containerTwo);
+  }
 }
