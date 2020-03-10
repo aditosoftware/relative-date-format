@@ -27,20 +27,20 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             groupId = "de.adito"
-            artifactId = "relative-date-expression"
+            artifactId = "relative-date-format"
 
             pom {
                 name.set("Relative Date Expression")
-                url.set("https://github.com/aditosoftware/relative-date-expressison")
+                url.set("https://github.com/aditosoftware/relative-date-format")
 
                 scm {
-                    connection.set("https://github.com/aditosoftware/relative-date-expressison.git")
-                    developerConnection.set("git@github.com:aditosoftware/relative-date-expressison.git")
-                    url.set("https://github.com/aditosoftware/relative-date-expressison")
+                    connection.set("https://github.com/aditosoftware/relative-date-format.git")
+                    developerConnection.set("git@github.com:aditosoftware/relative-date-format.git")
+                    url.set("https://github.com/aditosoftware/relative-date-format")
                 }
 
                 issueManagement {
-                    url.set("https://github.com/aditosoftware/relative-date-expressison/issues")
+                    url.set("https://github.com/aditosoftware/relative-date-format/issues")
                     system.set("github")
                 }
 
