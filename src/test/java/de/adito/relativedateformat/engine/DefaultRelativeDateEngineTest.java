@@ -7,8 +7,7 @@ import de.adito.relativedateformat.tokenizer.exception.TokenizeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,25 +25,23 @@ class DefaultRelativeDateEngineTest {
   }
 
   @Test
-  void shouldResolveAdjustedExpressionCorrectly()
-      throws TokenizeException, EngineException {
-    IExpression expression = tokenizer.tokenize("REL=ADJUSTED;SCOPE=YEAR");
+  void shouldResolveAdjustedExpressionCorrectly() {
+    IExpression expression = tokenizer.tokenize("REL=ADJUSTED;UNIT=YEAR");
     RelativeDateResult result = engine.resolve(expression, now);
 
     assertNotNull(result);
 
-    Duration expected =
-        Duration.between(
-            now.with(TemporalAdjusters.firstDayOfYear()),
-            now.with(TemporalAdjusters.lastDayOfYear()));
+    assertEquals(
+        now.with(TemporalAdjusters.firstDayOfYear()).toLocalDate().atTime(LocalTime.MIN),
+        result.getStart());
 
-    assertEquals(now.with(TemporalAdjusters.firstDayOfYear()), result.getStart());
-    assertEquals(expected, result.getDuration());
+    assertEquals(
+        now.with(TemporalAdjusters.lastDayOfYear()).toLocalDate().atTime(LocalTime.MAX),
+        result.getEnd());
   }
 
   @Test
-  void shouldResolveFixedExpressionCorrectly()
-      throws TokenizeException, EngineException {
+  void shouldResolveFixedExpressionCorrectly() throws TokenizeException, EngineException {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P10D");
     RelativeDateResult result = engine.resolve(expression, now);
 
@@ -58,16 +55,32 @@ class DefaultRelativeDateEngineTest {
   }
 
   @Test
+  void shouldResolveFixedExpressionWithUnitCorrectly() {
+    IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P2W;UNIT=WEEK");
+    RelativeDateResult result = engine.resolve(expression, now);
+
+    assertNotNull(result);
+
+    LocalDateTime start =
+        now.minus(Period.ofWeeks(2)).with(DayOfWeek.MONDAY).toLocalDate().atTime(LocalTime.MIN);
+
+    LocalDateTime end = now.with(DayOfWeek.SUNDAY).toLocalDate().atTime(LocalTime.MAX);
+
+    assertEquals(start, result.getStart());
+    assertEquals(end, result.getEnd());
+  }
+
+  @Test
   void shouldThrowOnInvalidFixedExpression() throws TokenizeException {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P1D;END=-P2D");
 
     assertThrows(EngineException.class, () -> engine.resolve(expression, now));
   }
 
-  @Test
+  /*  @Test
   void shouldResolveMixedExpression()
       throws TokenizeException, EngineException {
-    IExpression expression = tokenizer.tokenize("REL=MIXED;DURATION=P300D;SCOPE=MONTH");
+    IExpression expression = tokenizer.tokenize("REL=MIXED;DURATION=P300D;UNIT=MONTH");
     RelativeDateResult result = engine.resolve(expression, now);
 
     assertNotNull(result);
@@ -79,5 +92,5 @@ class DefaultRelativeDateEngineTest {
 
     assertEquals(start, result.getStart());
     assertEquals(expected, result.getDuration());
-  }
+  }*/
 }

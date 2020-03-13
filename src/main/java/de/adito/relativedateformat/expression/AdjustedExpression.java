@@ -1,20 +1,19 @@
 package de.adito.relativedateformat.expression;
 
 import de.adito.relativedateformat.token.ExpressionTokenContainer;
-import de.adito.relativedateformat.token.ScopeToken;
+import de.adito.relativedateformat.token.UnitToken;
 
 public class AdjustedExpression extends AbstractExpression implements IExpression {
-
   public AdjustedExpression(ExpressionTokenContainer container) {
     super(Type.ADJUSTED, container);
   }
 
-  public ScopeToken.Scope getScope() {
-    return getValue(ScopeToken.class);
+  public UnitToken.Unit getUnit() {
+    return getValue(UnitToken.class);
   }
 
   @Override
   void validateContainer(ExpressionTokenContainer container) {
-    ExpressionValidator.requireToken(container, ScopeToken.class);
+    ExpressionValidator.requireToken(container, UnitToken.class);
   }
 }

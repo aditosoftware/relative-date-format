@@ -1,9 +1,11 @@
 package de.adito.relativedateformat.token;
 
-import java.time.Duration;
+import org.jetbrains.annotations.NotNull;
 
-public class StartToken extends AbstractToken<Duration> implements IDurationExpressionToken {
-  public StartToken(Duration value) {
+import java.time.Period;
+
+public class StartToken extends AbstractToken<Period> implements IPeriodExpressionToken {
+  public StartToken(@NotNull Period value) {
     super("START", value);
   }
 }

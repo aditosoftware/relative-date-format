@@ -14,7 +14,7 @@ public abstract class AbstractToken<T> implements IExpressionToken<T> {
   private final String tokenName;
   private final T value;
 
-  public AbstractToken(String tokenName, T value) {
+  public AbstractToken(String tokenName, @NotNull T value) {
     this.tokenName = tokenName;
     this.value = value;
   }

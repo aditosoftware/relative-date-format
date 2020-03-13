@@ -1,27 +1,28 @@
 package de.adito.relativedateformat.expression;
 
-import de.adito.relativedateformat.token.DurationToken;
+import de.adito.relativedateformat.token.PeriodToken;
 import de.adito.relativedateformat.token.ExpressionTokenContainer;
-import de.adito.relativedateformat.token.ScopeToken;
+import de.adito.relativedateformat.token.UnitToken;
+import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
+import java.time.Period;
 
 public class MixedExpression extends AbstractExpression implements IExpression {
   public MixedExpression(ExpressionTokenContainer container) {
     super(Type.MIXED, container);
   }
 
-  public Duration getDuration() {
-    return getValue(DurationToken.class);
+  public @Nullable Period getPeriod () {
+    return getValue(PeriodToken.class);
   }
 
-  public ScopeToken.Scope getScope() {
-    return getValue(ScopeToken.class);
+  public UnitToken.Unit getScope() {
+    return getValue(UnitToken.class);
   }
 
   @Override
   void validateContainer(ExpressionTokenContainer container) {
-    ExpressionValidator.requireToken(container, DurationToken.class);
-    ExpressionValidator.requireToken(container, ScopeToken.class);
+    ExpressionValidator.requireToken(container, PeriodToken.class);
+    ExpressionValidator.requireToken(container, UnitToken.class);
   }
 }

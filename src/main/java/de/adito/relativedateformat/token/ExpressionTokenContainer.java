@@ -47,6 +47,9 @@ public class ExpressionTokenContainer {
    * @param token The token to add to the container.
    */
   public void addToken(IExpressionToken<?> token) {
+    if(token.getValue() == null)
+      return;
+
     tokens.put(token.getClass(), token);
     tokensSet.add(token);
   }

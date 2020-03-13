@@ -1,25 +1,11 @@
-relative            = "REL" (relative-adjust / relative-fixed / relative-mixed)
+```
+relative            = "REL" (relative-frame / relative-adjust / relative-fixed / relative-mixed)
 
-relative-adjust     = 1*("ADJUST" (";" "SCOPE" "=" relative-adjust-scope))
+relative-adjust     = 1*("ADJUST" (";" "UNIT" "=" relative-unit))
 
-relative-fixed      = 1*("FIXED" (";" "START" "=" duration) / (";" "END" "=" duration))
+relative-fixed      = 1*("FIXED" (";" "START" "=" period) / (";" "END" "=" period) / (";" "UNIT" "=" relative-unit))
 
-relative-mixed      = 1*("MIXED" (";" "DURATION" "=" duration) / (";" "SCOPE" "=" relative-adjust-scope))
+relative-mixed      = 1*("MIXED" (";" "PERIOD" "=" period) / (";" "UNIT" "=" relative-unit))
 
-relative-adjust-scope =  "YEAR" / "MONTH" / "WEEK" / "DAY"
-
-duration            = (["+"] / "-") "A" (duration-date / duration-time / duration-week)
-
-duration-date       = duration-day [duration-time]
-
-druation-time       = "T" (duration-hour / duration-minute / duration-second)
-
-duration-week       = 1*DIGIT "W"
-
-duration-hour       = 1*DIGIT "H" [duration-minute]
-
-duration-minute     = 1*DIGIT "M" [duration-second]
-
-duration-second     = 1*DIGIT "S"
-
-duration-day        = 1*DIGIT "D"
+relative-unit      = "YEAR" / "MONTH" / "WEEK" / "DAY"
+```

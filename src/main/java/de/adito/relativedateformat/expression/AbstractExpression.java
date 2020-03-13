@@ -41,6 +41,7 @@ public abstract class AbstractExpression implements IExpression {
   @Override
   public String toString() {
     return getTokenContainer().getAllTokens().stream()
+        .filter(it -> it.getValue() != null)
         .map(it -> it.getTokenName() + "=" + it.getValue())
         .collect(Collectors.joining(";"));
   }

@@ -3,6 +3,7 @@ package de.adito.relativedateformat.token;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.Period;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,20 +13,20 @@ class ExpressionTokenContainerTest {
   void shouldHoldTokenInstanceCorrectly() {
     ExpressionTokenContainer container = new ExpressionTokenContainer();
 
-    DurationToken durationToken = new DurationToken(Duration.ofDays(1));
-    EndToken endToken = new EndToken(Duration.ofDays(1));
-    StartToken startToken = new StartToken(Duration.ofDays(1));
+    PeriodToken periodToken = new PeriodToken(Period.ofDays(1));
+    EndToken endToken = new EndToken(Period.ofDays(1));
+    StartToken startToken = new StartToken(Period.ofDays(1));
 
     // Add multiple tokens for testing.
-    container.addToken(durationToken);
+    container.addToken(periodToken);
     container.addToken(endToken);
     container.addToken(startToken);
 
-    assertTrue(container.hasToken(durationToken.getClass()));
+    assertTrue(container.hasToken(periodToken.getClass()));
     assertTrue(container.hasToken(endToken.getClass()));
     assertTrue(container.hasToken(startToken.getClass()));
 
-    assertEquals(container.getToken(durationToken.getClass()), durationToken);
+    assertEquals(container.getToken(periodToken.getClass()), periodToken);
     assertEquals(container.getToken(endToken.getClass()), endToken);
     assertEquals(container.getToken(startToken.getClass()), startToken);
   }
@@ -35,18 +36,18 @@ class ExpressionTokenContainerTest {
     ExpressionTokenContainer container = new ExpressionTokenContainer();
 
     RelToken relToken = new RelToken(RelToken.Type.ADJUSTED);
-    ScopeToken scopeToken = new ScopeToken(ScopeToken.Scope.DAY);
-    DurationToken durationToken = new DurationToken(Duration.ofDays(30));
+    UnitToken unitToken = new UnitToken(UnitToken.Unit.DAY);
+    PeriodToken periodToken = new PeriodToken(Period.ofDays(30));
 
     container.addToken(relToken);
-    container.addToken(scopeToken);
-    container.addToken(durationToken);
+    container.addToken(unitToken);
+    container.addToken(periodToken);
 
     List<IExpressionToken> tokensList = container.getAllTokens();
 
     assertEquals(relToken, tokensList.get(0));
-    assertEquals(scopeToken, tokensList.get(1));
-    assertEquals(durationToken, tokensList.get(2));
+    assertEquals(unitToken, tokensList.get(1));
+    assertEquals(periodToken, tokensList.get(2));
   }
 
   @Test
@@ -55,20 +56,20 @@ class ExpressionTokenContainerTest {
     ExpressionTokenContainer containerTwo = new ExpressionTokenContainer();
 
     RelToken relToken = new RelToken(RelToken.Type.ADJUSTED);
-    ScopeToken scopeToken = new ScopeToken(ScopeToken.Scope.DAY);
-    DurationToken durationToken = new DurationToken(Duration.ofDays(30));
+    UnitToken unitToken = new UnitToken(UnitToken.Unit.DAY);
+    PeriodToken periodToken = new PeriodToken(Period.ofDays(30));
 
     containerOne.addToken(relToken);
     containerTwo.addToken(relToken);
 
     assertEquals(containerOne, containerTwo);
 
-    containerOne.addToken(scopeToken);
-    containerTwo.addToken(scopeToken);
+    containerOne.addToken(unitToken);
+    containerTwo.addToken(unitToken);
 
     assertEquals(containerOne, containerTwo);
 
-    containerOne.addToken(durationToken);
+    containerOne.addToken(periodToken);
 
     assertNotEquals(containerOne, containerTwo);
   }
@@ -79,17 +80,17 @@ class ExpressionTokenContainerTest {
     ExpressionTokenContainer containerTwo = new ExpressionTokenContainer();
 
     RelToken relToken = new RelToken(RelToken.Type.ADJUSTED);
-    ScopeToken scopeToken = new ScopeToken(ScopeToken.Scope.DAY);
-    DurationToken durationToken = new DurationToken(Duration.ofDays(30));
+    UnitToken unitToken = new UnitToken(UnitToken.Unit.DAY);
+    PeriodToken periodToken = new PeriodToken(Period.ofDays(30));
 
     containerOne.addToken(relToken);
-    containerOne.addToken(scopeToken);
-    containerOne.addToken(durationToken);
+    containerOne.addToken(unitToken);
+    containerOne.addToken(periodToken);
 
     assertNotEquals(containerOne, containerTwo);
 
-    containerTwo.addToken(scopeToken);
-    containerTwo.addToken(durationToken);
+    containerTwo.addToken(unitToken);
+    containerTwo.addToken(periodToken);
     containerTwo.addToken(relToken);
 
     assertEquals(containerOne, containerTwo);

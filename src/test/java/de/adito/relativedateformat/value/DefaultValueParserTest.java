@@ -2,11 +2,12 @@ package de.adito.relativedateformat.value;
 
 import de.adito.relativedateformat.token.ETokenType;
 import de.adito.relativedateformat.token.RelToken;
-import de.adito.relativedateformat.token.ScopeToken;
+import de.adito.relativedateformat.token.UnitToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,8 +22,8 @@ class DefaultValueParserTest {
 
   @Test
   void shouldParseScopeValue() throws ValueParseException {
-    assertEquals(ScopeToken.Scope.DAY, parser.parseValue(ETokenType.SCOPE, "DAY"));
-    assertEquals(ScopeToken.Scope.YEAR, parser.parseValue(ETokenType.SCOPE, "YEAR"));
+    assertEquals(UnitToken.Unit.DAY, parser.parseValue(ETokenType.UNIT, "DAY"));
+    assertEquals(UnitToken.Unit.YEAR, parser.parseValue(ETokenType.UNIT, "YEAR"));
   }
 
   @Test
@@ -32,10 +33,10 @@ class DefaultValueParserTest {
   }
 
   @Test
-  void shouldParseDurationValue() throws ValueParseException {
-    Duration d = Duration.ofDays(1).plus(Duration.ofMinutes(360));
+  void shouldParsePeriodValue () throws ValueParseException {
+    Period d = Period.ofYears(20).plus(Period.ofWeeks(30));
 
-    assertEquals(d, parser.parseValue(ETokenType.DURATION, d.toString()));
+    assertEquals(d, parser.parseValue(ETokenType.PERIOD, d.toString()));
     assertEquals(d, parser.parseValue(ETokenType.START, d.toString()));
     assertEquals(d, parser.parseValue(ETokenType.END, d.toString()));
   }
@@ -43,6 +44,6 @@ class DefaultValueParserTest {
   @Test
   void shouldThrowExceptionOnInvalidValue() {
     assertThrows(
-        ValueParseException.class, () -> parser.parseValue(ETokenType.DURATION, "ASDF!INVALID"));
+        ValueParseException.class, () -> parser.parseValue(ETokenType.PERIOD, "ASDF!INVALID"));
   }
 }

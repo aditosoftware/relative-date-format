@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
+import java.time.Period;
 import java.util.stream.Stream;
 
 /**
@@ -13,16 +13,17 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings("rawtypes")
 public enum ETokenType {
-  SCOPE(ScopeToken.class, ScopeToken.Scope.class),
-  END(EndToken.class, Duration.class),
-  START(StartToken.class, Duration.class),
-  DURATION(DurationToken.class, Duration.class),
-  REL(RelToken.class, RelToken.Type.class);
+  UNIT(UnitToken.class, UnitToken.Unit.class),
+  END(EndToken.class, Period.class),
+  START(StartToken.class, Period.class),
+  REL(RelToken.class, RelToken.Type.class),
+  PERIOD(PeriodToken.class, Period.class),
+  FULL(FullToken.class, Boolean.class);
 
   private final Class<? extends IExpressionToken> token;
   private final Class<?> value;
 
-  ETokenType(Class<? extends IExpressionToken> token, Class<?> value) {
+  <T> ETokenType(Class<? extends IExpressionToken<T>> token, Class<T> value) {
     this.token = token;
     this.value = value;
   }
