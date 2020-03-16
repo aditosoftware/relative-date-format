@@ -3,7 +3,7 @@ version = "1.0.0"
 plugins {
     `java-library`
     `maven-publish`
-    id("org.hibernate.build.maven-repo-auth") version "3.0.0"
+    id("org.hibernate.build.maven-repo-auth") version "3.0.0" apply false
 }
 
 repositories {
