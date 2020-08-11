@@ -7,8 +7,9 @@ import java.time.temporal.*;
  * Implementation to calculate the start and ending of a week based on the start. The end will
  * always be the previous day of the start day.
  */
-public class WeekBoundsCalculator
-{
+public class WeekBoundsCalculator {
+  private WeekBoundsCalculator() {}
+
   /**
    * Will calculate the bounds for the week. The start and end bounds are represented by a {@link
    * TemporalAdjuster}, which can be applied to the relative date. Depending on the actual bounds,
@@ -35,7 +36,6 @@ public class WeekBoundsCalculator
   private static int circular(int input) {
     final int start = 1;
     final int end = 7;
-
 
     if (input < start) return end - ((-input + end) % end);
     else if (input > end) return (input % end) - 1;

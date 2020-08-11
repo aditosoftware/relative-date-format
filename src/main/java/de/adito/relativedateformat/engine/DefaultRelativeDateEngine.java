@@ -14,8 +14,7 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
   public RelativeDateResult resolve(
       @NotNull IExpression expression,
       @NotNull LocalDateTime relative,
-      @Nullable RelativeDateEngineProperties properties)
-      throws EngineException {
+      @Nullable RelativeDateEngineProperties properties) {
     if (expression instanceof AdjustedExpression)
       return resolveAdjustedExpression(((AdjustedExpression) expression), relative, properties);
     else if (expression instanceof FixedExpression)
@@ -85,7 +84,7 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
         if (start) return TemporalAdjusters.firstDayOfMonth();
         else return TemporalAdjusters.lastDayOfMonth();
       case WEEK:
-        WeekBoundsCalculator.Bounds bounds = _getWeekBounds(properties);
+        WeekBoundsCalculator.Bounds bounds = getWeekBounds(properties);
 
         if (start) return bounds.start;
         else return bounds.end;
@@ -109,7 +108,7 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
    * @param properties The properties which hold the first day of week.
    * @return The bounds for the week.
    */
-  private WeekBoundsCalculator.Bounds _getWeekBounds(RelativeDateEngineProperties properties) {
+  private WeekBoundsCalculator.Bounds getWeekBounds(RelativeDateEngineProperties properties) {
     DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
 
     // Load the first day of week from the properties if available.

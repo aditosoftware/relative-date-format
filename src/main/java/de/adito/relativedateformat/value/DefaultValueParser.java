@@ -1,11 +1,8 @@
 package de.adito.relativedateformat.value;
 
-import de.adito.relativedateformat.token.ETokenType;
-import de.adito.relativedateformat.token.RelToken;
-import de.adito.relativedateformat.token.UnitToken;
+import de.adito.relativedateformat.token.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.time.Period;
 import java.util.function.Function;
 
@@ -25,23 +22,6 @@ public class DefaultValueParser implements ValueParser {
         return parseBoolean(type, value);
       default:
         return null;
-    }
-  }
-
-  /**
-   * Will parse the given string value into an instance of a {@link Duration}.
-   *
-   * @param value The value to parse as string
-   * @return The parsed duration.
-   * @throws ValueParseException If the parsing of the value fails.
-   */
-  private Duration parseDuration(ETokenType type, String value) {
-    if (value == null || value.isEmpty() || value.equalsIgnoreCase("null")) return Duration.ZERO;
-
-    try {
-      return Duration.parse(value);
-    } catch (Exception exception) {
-      throw valueParseException(value, type);
     }
   }
 
@@ -77,22 +57,6 @@ public class DefaultValueParser implements ValueParser {
   private Object parseEnum(ETokenType type, Function<String, Object> accessor, String value) {
     try {
       return accessor.apply(value);
-    } catch (Exception exception) {
-      throw valueParseException(value, type);
-    }
-  }
-
-  /**
-   * Will parse the given value into an integer. If the given string is no valid integer it will
-   * throw an exception.
-   *
-   * @param value The value to parse into an integer.
-   * @return The parsed integer value
-   * @throws ValueParseException If the given string value could not be parsed into an integer.
-   */
-  private Object parseInteger(ETokenType type, String value) {
-    try {
-      return Integer.valueOf(value);
     } catch (Exception exception) {
       throw valueParseException(value, type);
     }
