@@ -14,7 +14,12 @@ As the reference implementation is written in Java, here are some usage examples
 IExpression expression = RelativeDateTokenizer.get().tokenize("REL=ADJUSTED;UNIT=YEAR");
 
 // Calculate the timespan relative to now (assume now is "2020-03-16T12:00:00"):
-RelativeDateResult result = RelativeDateEngine.get().resolve(expression, LocalDateTime.now())
+RelativeDateResult result = RelativeDateEngine.get().resolve(expression, LocalDateTime.now());
+
+// Calculate the timespan relativ to now with a custom first day of week:
+IExpression weekExpression = RelativeDateTokenizer.get().tokenize("REL=ADJUSTED;UNIT=WEEK");
+RelativeDateResult result = RelativeDateEngine.get().resolve(weekExpression, LocalDateTime.now(),
+            new RelativeDateEngineProperties(DayOfWeek.SUNDAY));
 
 // The result of the calculation:
 result.getStart(); // Will print "2020-01-01T00:00:00"
