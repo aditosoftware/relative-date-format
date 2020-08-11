@@ -21,7 +21,7 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
     else if (expression instanceof FixedExpression)
       return resolveFixedExpression((FixedExpression) expression, relative, properties);
     else if (expression instanceof MixedExpression)
-      return resolveMixedExpression((MixedExpression) expression, relative);
+      throw new UnsupportedOperationException("MixedExpression not yet supported");
 
     throw new UnsupportedOperationException(
         String.format(
@@ -71,11 +71,6 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
     }
 
     return new DefaultResult(start, end, Duration.between(start, end));
-  }
-
-  private RelativeDateResult resolveMixedExpression(
-      MixedExpression expression, LocalDateTime relative) {
-    return new DefaultResult(null, null, null);
   }
 
   @Nullable
