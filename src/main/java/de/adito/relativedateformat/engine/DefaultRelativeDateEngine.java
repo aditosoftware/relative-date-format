@@ -1,28 +1,25 @@
 package de.adito.relativedateformat.engine;
 
+import de.adito.relativedateformat.engine.day.WeekBoundsCalculator;
 import de.adito.relativedateformat.engine.exception.EngineException;
-import de.adito.relativedateformat.expression.AdjustedExpression;
-import de.adito.relativedateformat.expression.FixedExpression;
-import de.adito.relativedateformat.expression.IExpression;
-import de.adito.relativedateformat.expression.MixedExpression;
+import de.adito.relativedateformat.expression.*;
 import de.adito.relativedateformat.token.UnitToken;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalUnit;
+import java.time.temporal.*;
 
 public class DefaultRelativeDateEngine implements RelativeDateEngine {
   @Override
   public RelativeDateResult resolve(
-      @NotNull IExpression expression, @NotNull LocalDateTime relative) throws EngineException {
+      @NotNull IExpression expression,
+      @NotNull LocalDateTime relative,
+      @Nullable RelativeDateEngineProperties properties)
+      throws EngineException {
     if (expression instanceof AdjustedExpression)
-      return resolveAdjustedExpression(((AdjustedExpression) expression), relative);
+      return resolveAdjustedExpression(((AdjustedExpression) expression), relative, properties);
     else if (expression instanceof FixedExpression)
-      return resolveFixedExpression((FixedExpression) expression, relative);
+      return resolveFixedExpression((FixedExpression) expression, relative, properties);
     else if (expression instanceof MixedExpression)
       return resolveMixedExpression((MixedExpression) expression, relative);
 
@@ -32,16 +29,18 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
   }
 
   private RelativeDateResult resolveAdjustedExpression(
-      AdjustedExpression expression, LocalDateTime relative) {
+      AdjustedExpression expression,
+      LocalDateTime relative,
+      @Nullable RelativeDateEngineProperties properties) {
     UnitToken.Unit unit = expression.getUnit();
 
     LocalDateTime start = relative;
     LocalDateTime end = relative;
 
-    TemporalAdjuster startAdjuster = getTemporalAdjuster(true, unit);
+    TemporalAdjuster startAdjuster = getTemporalAdjuster(true, unit, properties);
     if (startAdjuster != null) start = start.with(startAdjuster);
 
-    TemporalAdjuster endAdjuster = getTemporalAdjuster(false, unit);
+    TemporalAdjuster endAdjuster = getTemporalAdjuster(false, unit, properties);
     if (endAdjuster != null) end = end.with(endAdjuster);
 
     start = adjustToTime(true, start);
@@ -51,7 +50,7 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
   }
 
   private RelativeDateResult resolveFixedExpression(
-      FixedExpression expression, LocalDateTime relative) {
+      FixedExpression expression, LocalDateTime relative, RelativeDateEngineProperties properties) {
     Period startPeriod = expression.getStart();
     Period endPeriod = expression.getEnd();
     UnitToken.Unit unit = expression.getUnit();
@@ -62,9 +61,9 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
     if (end.isBefore(start)) throw new EngineException("Start of expression is before end");
 
     if (unit != null) {
-      TemporalAdjuster startAdjuster = getTemporalAdjuster(true, unit);
+      TemporalAdjuster startAdjuster = getTemporalAdjuster(true, unit, properties);
       if (startAdjuster != null) start = start.with(startAdjuster);
-      TemporalAdjuster endAdjuster = getTemporalAdjuster(false, unit);
+      TemporalAdjuster endAdjuster = getTemporalAdjuster(false, unit, properties);
       if (endAdjuster != null) end = end.with(endAdjuster);
 
       start = adjustToTime(true, start);
@@ -80,7 +79,9 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
   }
 
   @Nullable
-  private TemporalAdjuster getTemporalAdjuster(boolean start, UnitToken.Unit unit) {
+  private TemporalAdjuster getTemporalAdjuster(
+      boolean start, UnitToken.Unit unit, RelativeDateEngineProperties properties) {
+
     switch (unit) {
       case YEAR:
         if (start) return TemporalAdjusters.firstDayOfYear();
@@ -89,8 +90,10 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
         if (start) return TemporalAdjusters.firstDayOfMonth();
         else return TemporalAdjusters.lastDayOfMonth();
       case WEEK:
-        if (start) return DayOfWeek.MONDAY;
-        else return DayOfWeek.SUNDAY;
+        WeekBoundsCalculator.Bounds bounds = _getWeekBounds(properties);
+
+        if (start) return bounds.start;
+        else return bounds.end;
       case DAY:
       default:
         return null;
@@ -103,17 +106,22 @@ public class DefaultRelativeDateEngine implements RelativeDateEngine {
     else return dateTime.toLocalDate().atTime(LocalTime.MAX);
   }
 
-  private TemporalUnit getTemporalUnit(UnitToken.Unit unit) {
-    switch (unit) {
-      case YEAR:
-        return ChronoUnit.YEARS;
-      case MONTH:
-        return ChronoUnit.MONTHS;
-      case WEEK:
-        return ChronoUnit.WEEKS;
-      case DAY:
-      default:
-        return ChronoUnit.DAYS;
-    }
+  /**
+   * Will calculate the bounds for the week based on the given properties. The properties may hold
+   * the first day of the week. If no explicit first day of week is defined, we use {@link
+   * DayOfWeek#MONDAY}.
+   *
+   * @param properties The properties which hold the first day of week.
+   * @return The bounds for the week.
+   */
+  private WeekBoundsCalculator.Bounds _getWeekBounds(RelativeDateEngineProperties properties) {
+    DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
+
+    // Load the first day of week from the properties if available.
+    if (properties != null && properties.getFirstDayOfWeek() != null)
+      firstDayOfWeek = properties.getFirstDayOfWeek();
+
+    // Calculate the bounds.
+    return WeekBoundsCalculator.getBounds(firstDayOfWeek);
   }
 }

@@ -4,8 +4,7 @@ import de.adito.relativedateformat.engine.exception.EngineException;
 import de.adito.relativedateformat.expression.IExpression;
 import de.adito.relativedateformat.tokenizer.DefaultRelativeDateTokenizer;
 import de.adito.relativedateformat.tokenizer.exception.TokenizeException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
@@ -75,6 +74,26 @@ class DefaultRelativeDateEngineTest {
     IExpression expression = tokenizer.tokenize("REL=FIXED;START=-P1D;END=-P2D");
 
     assertThrows(EngineException.class, () -> engine.resolve(expression, now));
+  }
+
+  @Test
+  void shouldResolveAdjustedExpressionWithCustomFirstDayOfWeekCorrectly() {
+    IExpression expression = tokenizer.tokenize("REL=ADJUSTED;UNIT=WEEK");
+    RelativeDateResult result =
+        engine.resolve(
+            expression,
+            LocalDateTime.parse("2020-08-10T09:47:26"),
+            new RelativeDateEngineProperties(DayOfWeek.SUNDAY));
+
+    assertNotNull(result);
+
+    assertEquals(
+        LocalDateTime.parse("2020-08-09T00:00:00").toLocalDate().atTime(LocalTime.MIN),
+        result.getStart());
+
+    assertEquals(
+        LocalDateTime.parse("2020-08-15T00:00:00").toLocalDate().atTime(LocalTime.MAX),
+        result.getEnd());
   }
 
   /*  @Test
